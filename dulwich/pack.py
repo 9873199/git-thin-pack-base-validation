@@ -48,6 +48,11 @@ __all__ = [
     "MemoryPackIndex",
     "ObjectContainer",
     "OldUnpackedObject",
+    "ExternalObjectMismatch",
+    "ExternalObjectUnavailable",
+    "InvalidDeltaBaseOffset",
+    "InvalidExternalReference",
+    "MaxDeltaChainDepthExceeded",
     "Pack",
     "PackChunkGenerator",
     "PackData",
@@ -193,6 +198,19 @@ REF_DELTA = 7
 
 DELTA_TYPES = (OFS_DELTA, REF_DELTA)
 
+# Numeric Git object types that may be stored as a full (non-delta) object:
+# 1=commit, 2=tree, 3=blob, 4=tag. 5 is reserved/undefined and 6/7 are the
+# delta types, so any of those naming a concrete object is malformed.
+_NON_DELTA_TYPE_NUMS = frozenset((1, 2, 3, 4))
+
+# Maximum number of delta nodes walked while resolving a single object. A
+# chain of exactly this many deltas is accepted; attempting to descend one
+# level further (which would require another base lookup) is rejected.
+# This is a reader-side safety ceiling against pathological or hostile
+# chains, deliberately well above Git's default writer depth (pack.depth =
+# 50) so ordinary packs are unaffected while runaway chains still terminate.
+DEFAULT_MAX_DELTA_RESOLVE_DEPTH = 4096
+
 
 DEFAULT_PACK_DELTA_WINDOW_SIZE = 10
 
@@ -291,6 +309,102 @@ class UnresolvedDeltas(Exception):
 
 class DeltaCycle(UnresolvedDeltas):
     """A pack's delta chain references itself and cannot be resolved."""
+
+
+class InvalidDeltaBaseOffset(UnresolvedDeltas):
+    """An OFS_DELTA names a base position that is not a valid object.
+
+    The encoded relative offset must point strictly backwards at the start
+    of another object recorded in the pack. A zero, negative or otherwise
+    unindexed position is malformed rather than a missing object.
+    """
+
+    def __init__(self, offset: int, base_offset: int) -> None:
+        """Initialize InvalidDeltaBaseOffset.
+
+        Args:
+          offset: Position of the OFS_DELTA object in the pack.
+          base_offset: Position it claimed as its base.
+        """
+        self.offset = offset
+        self.base_offset = base_offset
+        super().__init__([])
+        Exception.__init__(
+            self,
+            f"OFS_DELTA at {offset} references invalid base offset "
+            f"{base_offset}",
+        )
+
+
+class InvalidExternalReference(UnresolvedDeltas):
+    """A resolver returned data that cannot be used as a delta base.
+
+    The response was missing, had the wrong shape, named an unsupported
+    object type, or its contents did not hash to the requested object ID for
+    the pack's object format. Nothing returned by the resolver is cached.
+    """
+
+    def __init__(self, sha: bytes, reason: str) -> None:
+        """Initialize InvalidExternalReference.
+
+        Args:
+          sha: Binary object ID that was requested from the resolver.
+          reason: Human-readable explanation of what was wrong.
+        """
+        self.sha = sha
+        self.reason = reason
+        try:
+            hex_id = sha_to_hex(RawObjectID(sha))
+        except ValueError:
+            # The id itself may be malformed (e.g. wrong length); still
+            # surface it without masking the real validation failure.
+            hex_id = ObjectID(binascii.hexlify(sha))
+        super().__init__([sha])
+        Exception.__init__(
+            self,
+            f"invalid external reference {hex_id.decode('ascii')}: {reason}",
+        )
+
+
+class ExternalObjectUnavailable(InvalidExternalReference):
+    """The resolver could not supply the requested external object at all."""
+
+
+class ExternalObjectMismatch(InvalidExternalReference):
+    """The resolver's object hashes to a different ID than was requested."""
+
+    def __init__(self, sha: bytes, actual_sha: bytes) -> None:
+        """Initialize ExternalObjectMismatch.
+
+        Args:
+          sha: Binary object ID that was requested.
+          actual_sha: Binary object ID computed from the returned contents.
+        """
+        self.actual_sha = actual_sha
+        super().__init__(
+            sha,
+            f"contents hash to {sha_to_hex(RawObjectID(actual_sha)).decode('ascii')}",
+        )
+
+
+class MaxDeltaChainDepthExceeded(UnresolvedDeltas):
+    """A delta chain is longer than the per-resolution depth limit."""
+
+    def __init__(self, limit: int, sha: bytes | None = None) -> None:
+        """Initialize MaxDeltaChainDepthExceeded.
+
+        Args:
+          limit: The maximum number of delta nodes that may be walked.
+          sha: Binary object ID of the base that would have been fetched
+              next, if known.
+        """
+        self.limit = limit
+        shas = [sha_to_hex(RawObjectID(sha))] if sha is not None else []
+        super().__init__(shas)
+        Exception.__init__(
+            self,
+            f"delta chain exceeded maximum resolution depth of {limit}",
+        )
 
 
 class ObjectContainer(Protocol):
@@ -4529,6 +4643,7 @@ class Pack:
         threads: int | None = None,
         big_file_threshold: int | None = None,
         delta_base_cache_limit: int | None = None,
+        max_delta_resolve_depth: int = DEFAULT_MAX_DELTA_RESOLVE_DEPTH,
     ) -> None:
         """Initialize a Pack object.
 
@@ -4543,12 +4658,19 @@ class Pack:
           threads: Number of threads to use for operations
           big_file_threshold: Size threshold for big file handling
           delta_base_cache_limit: Maximum bytes for delta base object cache
+          max_delta_resolve_depth: Maximum number of delta nodes walked in
+              a single :meth:`resolve_object` call. A chain of exactly this
+              many deltas ending at a full object is accepted; one level
+              more is rejected before another base lookup occurs.
         """
         self._basename = basename
         self.object_format = object_format
         self._data = None
         self._idx = None
         self._bitmap = None
+        # Lazily materialised set of every offset recorded in the index,
+        # so OFS_DELTA base validation stays O(1) on long delta chains.
+        self._indexed_offsets: set[int] | None = None
         self._idx_path = self._basename + ".idx"
         self._data_path = self._basename + ".pack"
         self._bitmap_path = self._basename + ".bitmap"
@@ -4559,6 +4681,12 @@ class Pack:
         self.threads = threads
         self.big_file_threshold = big_file_threshold
         self.delta_base_cache_limit = delta_base_cache_limit
+        if max_delta_resolve_depth < 1:
+            raise ValueError(
+                "max_delta_resolve_depth must be at least 1, got "
+                f"{max_delta_resolve_depth}"
+            )
+        self.max_delta_resolve_depth = max_delta_resolve_depth
         self._idx_load = lambda: load_pack_index(self._idx_path, object_format)
         self._data_load = lambda: PackData(
             self._data_path,
@@ -4736,6 +4864,7 @@ class Pack:
         if self._idx is not None:
             self._idx.close()
             self._idx = None
+        self._indexed_offsets = None
 
     def __del__(self) -> None:
         """Ensure pack file is closed when Pack is garbage collected."""
@@ -4940,22 +5069,95 @@ class Pack:
             return False
         return True
 
+    def _indexed_offsets_set(self) -> set[int]:
+        """Return a set of every object offset recorded in the index.
+
+        Materialised once and reused, so validating many OFS_DELTA hops on a
+        large pack does not degrade into repeated linear index scans.
+        """
+        if self._indexed_offsets is None:
+            self._indexed_offsets = {
+                offset for _sha, offset, _crc32 in self.index.iterentries()
+            }
+        return self._indexed_offsets
+
     def get_ref(
         self, sha: RawObjectID | ObjectID
     ) -> tuple[int | None, int, OldUnpackedObject]:
-        """Get the object for a ref SHA, only looking in this pack."""
-        # TODO: cache these results
+        """Get the object for a ref SHA, only looking in this pack.
+
+        Objects supplied by the external resolver are validated here as
+        well: the returned type and contents must hash back to ``sha`` under
+        this pack's object format before they are handed to the delta chain.
+
+        Raises:
+          KeyError: if the sha is neither in this pack nor resolvable.
+          ExternalObjectUnavailable: if the resolver cannot supply it.
+          InvalidExternalReference: if the resolver's reply is unusable.
+          ExternalObjectMismatch: if the reply hashes to a different id.
+        """
         try:
             offset = self.index.object_offset(sha)
         except KeyError:
             offset = None
         if offset:
             type, obj = self.data.get_object_at(offset)
-        elif self.resolve_ext_ref:
-            type, obj = self.resolve_ext_ref(sha)
-        else:
+            return offset, type, obj
+        return self._get_external_ref(RawObjectID(sha))
+
+    def _get_external_ref(
+        self, sha: RawObjectID
+    ) -> tuple[None, int, OldUnpackedObject]:
+        """Resolve and validate an object that is not stored in this pack.
+
+        The resolver is treated as untrusted input. Its reply must be a
+        two-tuple of (object type, contents), name a concrete (non-delta)
+        object type, and hash to the requested ``sha`` with the pack's
+        object format. A failure raises a dedicated exception rather than
+        letting an ``AssertionError`` or unpacking error escape.
+
+        Raises:
+          KeyError: when no resolver is configured.
+          ExternalObjectUnavailable: when the resolver cannot find the id.
+          InvalidExternalReference: when the reply is malformed.
+          ExternalObjectMismatch: when the reply hashes to a different id.
+        """
+        if self.resolve_ext_ref is None:
             raise KeyError(sha)
-        return offset, type, obj
+        try:
+            reply = self.resolve_ext_ref(sha)
+        except KeyError as exc:
+            raise ExternalObjectUnavailable(sha, "resolver has no such object") from exc
+        try:
+            type_num, contents = reply  # type: ignore[misc]
+        except (TypeError, ValueError) as exc:
+            raise InvalidExternalReference(
+                sha, f"resolver returned {reply!r}, expected (type, contents)"
+            ) from exc
+        if not isinstance(type_num, int) or isinstance(type_num, bool):
+            raise InvalidExternalReference(
+                sha, f"resolver returned non-integer object type {type_num!r}"
+            )
+        if type_num not in _NON_DELTA_TYPE_NUMS:
+            raise InvalidExternalReference(
+                sha, f"resolver returned unsupported object type {type_num}"
+            )
+        if isinstance(contents, bytes):
+            chunks = [contents]
+        elif isinstance(contents, list) and all(
+            isinstance(chunk, bytes) for chunk in contents
+        ):
+            chunks = contents
+        else:
+            raise InvalidExternalReference(
+                sha,
+                "resolver returned contents that are not bytes or a "
+                "list of bytes",
+            )
+        actual_sha = obj_sha(type_num, chunks, self.object_format.hash_func)
+        if actual_sha != sha:
+            raise ExternalObjectMismatch(sha, actual_sha)
+        return None, type_num, chunks
 
     def resolve_object(
         self,
@@ -4969,76 +5171,177 @@ class Pack:
     ) -> tuple[int, OldUnpackedObject]:
         """Resolve an object, possibly resolving deltas when necessary.
 
-        Returns: Tuple with object type and contents.
+        Pack-internal offsets and external object IDs are tracked
+        separately. OFS_DELTA bases must point strictly backwards at another
+        object recorded in this pack; REF_DELTA bases are followed by object
+        ID, so cycles remain detectable even when the resolver reports
+        ``offset=None`` (thin packs). External bases are re-hashed against
+        the requested ID before use. Each external ID is fetched at most
+        once per call (a repeat on the same chain is a cycle), and the
+        offset/ID visit sets are local to this call and never shared between
+        requests.
+
+        A single resolution may walk at most
+        :attr:`max_delta_resolve_depth` delta nodes. A chain of exactly
+        that length is accepted; the next level is rejected before another
+        base lookup happens.
+
+        Raises:
+          InvalidDeltaBaseOffset: an OFS_DELTA base is missing, zero,
+              negative or not a pack object.
+          DeltaCycle: the chain (possibly mixing OFS and REF deltas) loops.
+          MaxDeltaChainDepthExceeded: the depth limit is exceeded.
+          ExternalObjectUnavailable/InvalidExternalReference/
+              ExternalObjectMismatch: an external base could not be trusted.
+          ApplyDeltaError: a delta cannot be applied to its base.
         """
+        if get_ref is None:
+            get_ref = self.get_ref
+        max_depth = self.max_delta_resolve_depth
+
         # Walk down the delta chain, building a stack of deltas to reach
         # the requested object.
         base_offset: int | None = offset
         base_type = type
         base_obj = obj
-        delta_stack = []
-        seen_ref_offsets: set[int] = {offset}
+        delta_stack: list[tuple[int | None, int, list[bytes]]] = []
+        # Offsets of objects inside *this* pack already on the chain.
+        seen_offsets: set[int] = {offset}
+        # External object IDs already on the chain (offset is None for
+        # thin-pack bases, so they cannot share seen_offsets). A repeated ID
+        # in a linear chain is a cycle by definition, so this both detects
+        # loops and guarantees each external ID is fetched at most once.
+        # Both sets are local to this call and never shared between requests.
+        seen_ref_ids: set[bytes] = set()
+
         while base_type in DELTA_TYPES:
+            # Count only delta nodes actually traversed. A chain of
+            # ``max_depth`` deltas ending at a full object is accepted;
+            # an (max_depth + 1)th delta is rejected here, before its base
+            # lookup.
+            if len(delta_stack) >= max_depth:
+                raise MaxDeltaChainDepthExceeded(max_depth)
             prev_offset = base_offset
-            if get_ref is None:
-                get_ref = self.get_ref
-            assert isinstance(base_obj, tuple), (
-                f"Expected delta tuple, got {base_obj.__class__.__name__}"
-            )
+            if not isinstance(base_obj, tuple):
+                raise ApplyDeltaError(
+                    f"expected delta tuple at offset {prev_offset}, "
+                    f"got {base_obj.__class__.__name__}"
+                )
             if base_type == OFS_DELTA:
                 (delta_offset, delta) = base_obj
-                # TODO: clean up asserts and replace with nicer error messages
-                assert isinstance(delta_offset, int), (
-                    f"Expected int, got {delta_offset.__class__}"
-                )
-                assert base_offset is not None
-                base_offset = base_offset - delta_offset
-                base_type, base_obj = self.data.get_object_at(base_offset)
-                assert isinstance(base_type, int)
+                if not isinstance(delta_offset, int) or isinstance(
+                    delta_offset, bool
+                ):
+                    raise InvalidDeltaBaseOffset(
+                        prev_offset if prev_offset is not None else -1,
+                        delta_offset if isinstance(delta_offset, int) else -1,
+                    )
+                if prev_offset is None:
+                    # An external full object cannot carry an OFS_DELTA.
+                    raise InvalidDeltaBaseOffset(-1, delta_offset)
+                base_offset = prev_offset - delta_offset
+                # OFS_DELTA must reference an earlier, recorded object:
+                # strictly backwards, never zero/negative, never a gap.
+                if (
+                    delta_offset <= 0
+                    or base_offset < self.data._header_size
+                    or base_offset >= prev_offset
+                    or base_offset not in self._indexed_offsets_set()
+                ):
+                    raise InvalidDeltaBaseOffset(prev_offset, base_offset)
+                if base_offset in seen_offsets:
+                    base_sha = self.index.object_sha1(base_offset)
+                    raise DeltaCycle([RawObjectID(base_sha)])
+                seen_offsets.add(base_offset)
+                try:
+                    base_type, base_obj = self.data.get_object_at(base_offset)
+                except (zlib.error, KeyError, IndexError, ValueError) as exc:
+                    raise InvalidDeltaBaseOffset(
+                        prev_offset, base_offset
+                    ) from exc
             elif base_type == REF_DELTA:
                 (basename, delta) = base_obj
-                assert (
+                if not (
                     isinstance(basename, bytes)
                     and len(basename) == self.object_format.oid_length
-                )
-                base_offset_temp, base_type, base_obj = get_ref(RawObjectID(basename))
-                assert isinstance(base_type, int)
-                # base_offset_temp can be None for thin packs (external references)
-                base_offset = base_offset_temp
-                if base_offset == prev_offset:  # object is based on itself
-                    raise UnresolvedDeltas([basename])
-                # A repeated REF_DELTA base offset means the chain cycles;
-                # without this check the loop would never terminate.
-                if base_offset is not None:
-                    if base_offset in seen_ref_offsets:
-                        raise DeltaCycle([basename])
-                    seen_ref_offsets.add(base_offset)
+                ):
+                    raise InvalidExternalReference(
+                        basename if isinstance(basename, bytes) else b"",
+                        "REF_DELTA base id has the wrong length for "
+                        f"object format {self.object_format.name}",
+                    )
+                ref_id = RawObjectID(basename)
+                # Detect self loops and longer cycles even when the base is
+                # external and every reply carries offset=None. A shared
+                # base used by two *different* chains is not a loop: this
+                # set only contains ids of the chain currently being walked.
+                if ref_id in seen_ref_ids:
+                    raise DeltaCycle([ref_id])
+                seen_ref_ids.add(ref_id)
+                # get_ref raises KeyError when the id is neither in this
+                # pack nor resolvable; that contract is preserved. The
+                # resolver-specific validation failures raised by
+                # get_ref/_get_external_ref propagate unchanged.
+                (
+                    base_offset,
+                    base_type,
+                    base_obj,
+                ) = get_ref(ref_id)
+                if base_offset is None:
+                    # Thin-pack external base; only its object ID is tracked.
+                    pass
+                elif not isinstance(base_offset, int) or isinstance(
+                    base_offset, bool
+                ):
+                    raise InvalidExternalReference(
+                        ref_id,
+                        f"get_ref returned non-integer offset {base_offset!r}",
+                    )
+                elif base_offset in seen_offsets:
+                    # Internal REF_DELTA base that is already on this
+                    # chain: an offset-backed loop.
+                    raise DeltaCycle([ref_id])
+                else:
+                    seen_offsets.add(base_offset)
             else:
-                raise AssertionError(f"Unexpected delta type: {base_type}")
+                raise ApplyDeltaError(f"Unexpected delta type: {base_type}")
+            if not isinstance(delta, list) or not all(
+                isinstance(chunk, bytes) for chunk in delta
+            ):
+                raise ApplyDeltaError(
+                    f"delta at offset {prev_offset} is not a list of bytes"
+                )
             delta_stack.append((prev_offset, base_type, delta))
 
-        # Now grab the base object (mustn't be a delta) and apply the
-        # deltas all the way up the stack.
-        chunks = base_obj
+        if base_type not in _NON_DELTA_TYPE_NUMS:
+            raise ApplyDeltaError(
+                f"delta chain ends on object of unsupported type {base_type}"
+            )
+
+        # Normalise the terminal object to a list of byte chunks.
+        if isinstance(base_obj, bytes):
+            chunks: OldUnpackedObject = [base_obj]
+        elif isinstance(base_obj, list):
+            chunks = base_obj
+        else:
+            raise ApplyDeltaError(
+                f"base object has unsupported shape {base_obj.__class__.__name__}"
+            )
+
+        # Apply every delta into a private staging list first. The shared
+        # offset cache is not touched until the whole chain has applied, so a
+        # failed resolution leaves no partial intermediate results behind
+        # and can never overwrite or evict a pre-existing valid cache entry.
+        staged: list[tuple[int, OldUnpackedObject]] = []
         for prev_offset, _delta_type, delta in reversed(delta_stack):
-            # Convert chunks to bytes for apply_delta if needed
-            if isinstance(chunks, list):
-                chunks_bytes = b"".join(chunks)
-            elif isinstance(chunks, tuple):
-                # For tuple type, second element is the actual data
-                _, chunk_data = chunks
-                if isinstance(chunk_data, list):
-                    chunks_bytes = b"".join(chunk_data)
-                else:
-                    chunks_bytes = chunk_data
-            else:
-                chunks_bytes = chunks
-
-            # Apply delta and get result as list
+            chunks_bytes = (
+                chunks if isinstance(chunks, bytes) else b"".join(chunks)
+            )
             chunks = apply_delta(chunks_bytes, delta)
-
             if prev_offset is not None:
-                self.data._cache_object_at(prev_offset, base_type, chunks)
+                staged.append((prev_offset, chunks))
+        for cached_offset, cached_chunks in staged:
+            self.data._cache_object_at(cached_offset, base_type, cached_chunks)
         return base_type, chunks
 
     def entries(

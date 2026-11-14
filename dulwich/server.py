@@ -108,7 +108,7 @@ from .object_filters import (
 )
 from .object_store import MissingObjectFinder, PackBasedObjectStore, find_shallow
 from .objects import Commit, ObjectID, Tree, valid_hexsha
-from .pack import ObjectContainer, write_pack_from_container
+from .pack import ObjectContainer, UnresolvedDeltas, write_pack_from_container
 from .protocol import (
     CAPABILITIES_REF,
     CAPABILITY_AGENT,
@@ -1491,6 +1491,7 @@ class ReceivePackHandler(PackHandler):
             socket.error,
             zlib.error,
             ObjectFormatException,
+            UnresolvedDeltas,
         )
         will_send_pack = False
         zero_sha = ObjectID(b"0" * self.repo.object_format.hex_length)

@@ -1,5 +1,21 @@
 1.2.22	UNRELEASED
 
+ * SECURITY: Harden ``Pack.resolve_object`` and the thin-pack external base
+   resolver path against untrusted ``resolve_ext_ref`` callbacks. External
+   objects are re-hashed under the repository's object format (SHA-1 or
+   SHA-256) and accepted only when their id matches the requested one;
+   OFS_DELTA bases must point strictly backwards at an indexed object; and
+   REF_DELTA self-loops, long loops and mixed OFS/REF cycles are detected by
+   object id even when the resolver reports ``offset=None``. Failures raise
+   distinguishable library exceptions (``InvalidExternalReference``,
+   ``ExternalObjectUnavailable``, ``ExternalObjectMismatch``,
+   ``InvalidDeltaBaseOffset``, ``DeltaCycle``,
+   ``MaxDeltaChainDepthExceeded``) instead of bare ``AssertionError`` /
+   ``IndexError``. A single resolution is depth-capped, fetches each external
+   id at most once, keeps its visit sets per call, and caches intermediates
+   only after the whole chain applies, so a failed resolution neither
+   pollutes nor clears the shared pack cache.
+
  * Reject pack indexes whose fanout claims more than 2**31-1 objects on
    32-bit platforms with AssertionError rather than OverflowError.
    (Jelmer Vernooĳ, #2574)
