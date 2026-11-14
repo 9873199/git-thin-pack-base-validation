@@ -1,0 +1,16 @@
+{
+  "time": "2026-11-14T20:58:58+08:00",
+  "reviewer": "Codex primary AI-assisted reviewer",
+  "status": "PRIMARY_REVIEW_PASSED_AWAITING_USER_REVIEW",
+  "score": 3,
+  "score_basis": "Default resolver validates hash/type and broad core, cycle detection, per-call sharing, max-depth and atomic staged cache cases pass. But requested public custom get_ref path returns offsetNone and bypasses all external hashing, including resolved delta output. Concrete wrong bytes are published into cache and public get_raw serves them under the requested OID in both SHA1/SHA256. Core is usable but explicitly requested trust boundary remains incomplete. Repeated hash cases are one root cause, not independent severity penalties.",
+  "checks": {
+    "observable_actions_reviewed": true,
+    "product_requirement_mapping_reviewed": true,
+    "process_and_product_facts_verified": true,
+    "score_feedback_consistency_checked": true,
+    "non_product_errors_excluded": true,
+    "semantic_diversity_checked": true
+  },
+  "official_project_acceptance": "NOT_CLAIMED"
+}

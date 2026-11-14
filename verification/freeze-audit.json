@@ -1,0 +1,29 @@
+{
+  "time": "2026-11-14T20:45:18+08:00",
+  "uid": 868,
+  "status": "PASS",
+  "single_native_trace": "D:\\hc\\userFeedback\\cache\\runs\\uf-20261114-new10-git-thin-base-trust-retry-1\\frozen\\trajectory-original.jsonl",
+  "trace_sha256": "10d133e72ef648d34faa50a67063d6f2b69bb8f70a582338f48616c77111023b",
+  "session_id": "97b1f2b4-37cd-41e4-bc81-6e14616fd314",
+  "prompt_id": "505630d5-8653-49ab-afc8-82378555fc7f",
+  "exact_single_prompt": true,
+  "native_models": [
+    "auto_model/urm"
+  ],
+  "native_efforts": [
+    "high"
+  ],
+  "three_explicit_high_settings": true,
+  "native_success": true,
+  "frozen_files_unchanged": true,
+  "private_reasoning_excluded": true,
+  "event_counts": {
+    "queue-operation": 2,
+    "user": 198,
+    "attachment": 177,
+    "atis-latch": 52,
+    "assistant": 471,
+    "last-prompt": 52,
+    "system": 3
+  }
+}

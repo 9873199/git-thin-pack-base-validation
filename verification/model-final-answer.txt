@@ -1,0 +1,30 @@
+All 11 remaining failures are the pre-existing environmental ones (verified failing on the clean tree: Windows ASCII-codec `format-patch`/`patch` output, LFS, and symlink-privilege `OSError`s). My preamble failure is resolved; 3636 tests pass.
+
+## Summary
+
+I hardened Dulwich's thin-pack delta resolution against untrusted external base resolvers, all on the pure-Python path at the pinned commit `5b6e39c` (no accelerator build).
+
+### Source changes — `dulwich/pack.py`
+
+**New distinguishable library exceptions** (all under `UnresolvedDeltas`, so existing broad handlers keep working):
+- `InvalidDeltaBaseOffset` — OFS_DELTA zero/negative/backward/gap base
+- `InvalidExternalReference` (base class), `ExternalObjectUnavailable` (resolver `KeyError`/missing), `ExternalObjectMismatch` (hash mismatch)
+- `MaxDeltaChainDepthExceeded` — depth cap
+- `DeltaCycle` retained for loops
+
+**`Pack.resolve_object` rewrite (no bare `assert`/`IndexError` left in the path):**
+- Pack-internal offsets (`seen_offsets: set[int]`) and external object IDs (`seen_ref_ids: set[bytes]`) are tracked separately, so cycles are detected even when every resolver reply carries `offset=None` — self-loops, long loops, and mixed OFS/REF loops.
+- OFS_DELTA must point strictly backwards at an indexed object (O(1) via a lazily-built offset set, avoiding O(n²) index scans); failures map to `InvalidDeltaBaseOffset`.
+- Each external ID is fetched at most once per call (a repeat on the chain is a cycle), and all visit sets are call-local — nothing leaks between requests. A genuinely shared base used by separate chains still resolves.
+- A depth cap (`max_delta_resolve_depth`, default 4096, configurable) counts actual delta nodes: exactly the limit is accepted; the next level is rejected **before** another resolver call.
+- Deltas are applied into a private staging list and the shared offset cache is only written after the whole chain succeeds — failed resolutions neither leave intermediates nor disturb/evict existing valid cache entries.
+
+**`Pack.get_ref` / new `_get_external_ref`:** resolver replies are treated as untrusted — must be a `(type, bytes|list[bytes])` pair with a concrete type (1–4), and the type+contents are re-hashed with the pack's `object_format` and accepted only when the OID equals the requested ID. SHA-1 and SHA-256 both work. Only `KeyError` is reclassified; a healthy resolver's other (e.g. transient/performance) errors propagate unchanged.
+
+### `dulwich/server.py`
+Added the shared `UnresolvedDeltas` base to the receive-pack handler's exception tuple, so the new failures become clean protocol errors instead of escaping.
+
+### Tests — `tests/test_pack_resolve_hardening.py` (new, 24 cases)
+In-memory `BytesIO` packs + `MemoryPackIndex` + counting/controlled resolvers, driven through the **public** `get_raw`/`resolve_object`. Covers: offset-less external self/long loops, mixed OFS/REF chains, shared internal & external bases, wrong hash/type/malformed/missing replies, both object formats, the depth boundary (and fetch count), cache isolation on failure, and resolver-performance-failure passthrough. No network access.
+
+The parallel `DeltaChainIterator` (used by streaming `add_thin_pack`) is outside `resolve_object` and was left untouched; its errors still land under the server's `UnresolvedDeltas` handling.

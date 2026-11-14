@@ -1,0 +1,74 @@
+{
+  "uid": 868,
+  "run_id": "uf-20261114-new10-git-thin-base-trust-retry-1",
+  "reviewed": true,
+  "reviewer": "Codex primary AI-assisted frozen product review",
+  "frozen_trace_sha256": "10d133e72ef648d34faa50a67063d6f2b69bb8f70a582338f48616c77111023b",
+  "revision": "git-base-trust-r1",
+  "product_modules": [
+    "dulwich.pack",
+    "dulwich.object_format"
+  ],
+  "support_files": [
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\acceptance-preparation\\git_pack_fixture.py",
+      "path": "git_pack_fixture.py",
+      "sha256": "9ec4fdc1d65f5f903bcb4775aa9eb6e92d0f152212b129af676219975599cc00"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\acceptance-preparation\\test_git_pack_review.py",
+      "path": "test_git_pack_review.py",
+      "sha256": "413d96e90070105158b9c310a1e0b07293059a5397f5b6638adeb8813b2b3f10"
+    }
+  ],
+  "commands": [
+    {
+      "name": "independent-base-trust",
+      "argv": [
+        "{python}",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "{verification}/test_git_pack_review.py",
+        "-o",
+        "addopts=",
+        "-o",
+        "cache_dir={verification}/pytest-cache"
+      ],
+      "timeout": 180
+    },
+    {
+      "name": "model-hardening-tests",
+      "argv": [
+        "{python}",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_pack_resolve_hardening.py",
+        "-o",
+        "addopts=",
+        "-o",
+        "cache_dir={verification}/pytest-cache"
+      ],
+      "timeout": 180
+    },
+    {
+      "name": "upstream-pack-regression",
+      "argv": [
+        "{python}",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_pack.py",
+        "-o",
+        "addopts=",
+        "-o",
+        "cache_dir={verification}/pytest-cache"
+      ],
+      "timeout": 300
+    }
+  ]
+}

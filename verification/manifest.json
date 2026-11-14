@@ -1,0 +1,259 @@
+{
+  "created": "2026-11-14T21:01:04+08:00",
+  "reviewed": true,
+  "reviewer": "Codex primary AI-assisted reviewer",
+  "uid": 868,
+  "frozen_commit": "797cd01f671c857887e9a17897e7016ee9de188a",
+  "native_trajectory_sha256": "10d133e72ef648d34faa50a67063d6f2b69bb8f70a582338f48616c77111023b",
+  "files": [
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\freeze.json",
+      "path": "freeze.json",
+      "sha256": "b2dc81762a10296862b29a24cfe54c834cc9c46b9020011b9cab1e77dc359d6b"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\freeze-audit.json",
+      "path": "freeze-audit.json",
+      "sha256": "e6de910e438a35b9ed7711707d4dbd57fd6aea71d5b770bd10f45b5b0c69247c"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\environment-reviewed.json",
+      "path": "environment-reviewed.json",
+      "sha256": "1032221b1915d7f68aab5987fb85f53401e887da03ca5423c71df45b9be0d892"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\evidence-map.json",
+      "path": "evidence-map.json",
+      "sha256": "84be398c5ddd8ac3a38f55fccdd61fd9cd140d6c0db21c69d2e9ab4ab7fa2c3d"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\model-final-answer.txt",
+      "path": "model-final-answer.txt",
+      "sha256": "0cfae5f70f173e3415eee53f60f2cefc0f1e0124d4bd07f3c73e605b391afcfc"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\test-results.json",
+      "path": "test-results.json",
+      "sha256": "38de17e5e0cf4d4e86523a4aea17aa244ca1939a368d0ee2b2133567e50b89e6"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\evaluation-qc.json",
+      "path": "evaluation-qc.json",
+      "sha256": "a46eea8ec7267431e8afe479895d049b7d0a0a0059a7a2045c1fe9d70783feb9"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\actual-import.json",
+      "path": "verification/git-base-trust-r1/actual-import.json",
+      "sha256": "2ff63eb2a5eb9d631a149bc115143346b45cb3ccfb91bc7a7bdcc2d289ec7027"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\actual-import.stderr.log",
+      "path": "verification/git-base-trust-r1/actual-import.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\actual-import.stdout.log",
+      "path": "verification/git-base-trust-r1/actual-import.stdout.log",
+      "sha256": "9dcc0a90ec6fd60eef20ffba99c2f2c72541810bd57e648eddfa6b95c7101896"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\dependency-lock.json",
+      "path": "verification/git-base-trust-r1/dependency-lock.json",
+      "sha256": "ed0fd53c2d50f7b725dec75f5d9c1e5b7726f9c2dabd2f97e3bf0e196134c193"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\dependency-lock.stderr.log",
+      "path": "verification/git-base-trust-r1/dependency-lock.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\dependency-lock.stdout.log",
+      "path": "verification/git-base-trust-r1/dependency-lock.stdout.log",
+      "sha256": "c9f162bce97e253837629df49128b592af97a4e1a57fc63db8bf1f55df8f58be"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\git_pack_fixture.py",
+      "path": "verification/git-base-trust-r1/git_pack_fixture.py",
+      "sha256": "9ec4fdc1d65f5f903bcb4775aa9eb6e92d0f152212b129af676219975599cc00"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\independent-base-trust.json",
+      "path": "verification/git-base-trust-r1/independent-base-trust.json",
+      "sha256": "890131bdf59f86914b01638edaf8037c03a14ecd5a1013ec9f18d121743d755c"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\independent-base-trust.stderr.log",
+      "path": "verification/git-base-trust-r1/independent-base-trust.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\independent-base-trust.stdout.log",
+      "path": "verification/git-base-trust-r1/independent-base-trust.stdout.log",
+      "sha256": "2bb1b104cdcb475250378b3af6ff5011a6de32af51025922edfa9af8c17c5456"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\model-hardening-tests.json",
+      "path": "verification/git-base-trust-r1/model-hardening-tests.json",
+      "sha256": "7791902f20d4448a2e1babe1093cbbc3b4a74cbbb6746ca0e01d0d3ce6d12f4d"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\model-hardening-tests.stderr.log",
+      "path": "verification/git-base-trust-r1/model-hardening-tests.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\model-hardening-tests.stdout.log",
+      "path": "verification/git-base-trust-r1/model-hardening-tests.stdout.log",
+      "sha256": "5540af701d2c0e68f2ed9a234f767b655cb502528c2ce8c3e10feae7291dc20f"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\replay-proof.json",
+      "path": "verification/git-base-trust-r1/replay-proof.json",
+      "sha256": "390c3e9e8551e849f63678486727479e1975e3f7bd54fdeff409c3c954cb82c9"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\reproduction-notes.md",
+      "path": "verification/git-base-trust-r1/reproduction-notes.md",
+      "sha256": "d9f110c53b8b836af95534870e5d709089af5171d6eb7d2bdafa459e783ccb93"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\reviewed-spec.json",
+      "path": "verification/git-base-trust-r1/reviewed-spec.json",
+      "sha256": "6fdbc93f45c059ae25e70ed91bb1bb49dc7858440217634603427ad060eecab5"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\test_git_pack_review.py",
+      "path": "verification/git-base-trust-r1/test_git_pack_review.py",
+      "sha256": "413d96e90070105158b9c310a1e0b07293059a5397f5b6638adeb8813b2b3f10"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\upstream-pack-regression.json",
+      "path": "verification/git-base-trust-r1/upstream-pack-regression.json",
+      "sha256": "f495649f395e478cca5421ae446eb0f43668681cb8877d0a34502a97fd888650"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\upstream-pack-regression.stderr.log",
+      "path": "verification/git-base-trust-r1/upstream-pack-regression.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\upstream-pack-regression.stdout.log",
+      "path": "verification/git-base-trust-r1/upstream-pack-regression.stdout.log",
+      "sha256": "4d47e2d1d3a8676d7e5f461a2c54d22f6ea08f44f7ecc1784da60901dca915bc"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\actual-import.json",
+      "path": "verification/git-cache-hash-r2/actual-import.json",
+      "sha256": "2404ba4844de602fe1bc207280ccaaa3916716321cc7a07fd47db7513b98bea6"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\actual-import.stderr.log",
+      "path": "verification/git-cache-hash-r2/actual-import.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\actual-import.stdout.log",
+      "path": "verification/git-cache-hash-r2/actual-import.stdout.log",
+      "sha256": "f7e4b21f552a4f5a58f9d59c8651c2cafbae90dc27c43938c0aaa0cfec43c8c3"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.json",
+      "path": "verification/git-cache-hash-r2/cache-hash-reproduction.json",
+      "sha256": "715cbca54cc609a94d9f381f42a6c9fb08c0bf24e3d63d1763115e33aae0d961"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.stderr.log",
+      "path": "verification/git-cache-hash-r2/cache-hash-reproduction.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.stdout.log",
+      "path": "verification/git-cache-hash-r2/cache-hash-reproduction.stdout.log",
+      "sha256": "685031359633bb8740a08b236f7fef67c3f5a95569384ef35e04b4c2e30f7320"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\demo.py",
+      "path": "verification/git-cache-hash-r2/demo.py",
+      "sha256": "4a77d5a71956301ceda642902743b63241fba4a10c290b8310541fa3051e2c85"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\dependency-lock.json",
+      "path": "verification/git-cache-hash-r2/dependency-lock.json",
+      "sha256": "60909ed01789664b2fdbefe151e8191d77819dd2d29c7fa050dd05d6a1be24e3"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\dependency-lock.stderr.log",
+      "path": "verification/git-cache-hash-r2/dependency-lock.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\dependency-lock.stdout.log",
+      "path": "verification/git-cache-hash-r2/dependency-lock.stdout.log",
+      "sha256": "c9f162bce97e253837629df49128b592af97a4e1a57fc63db8bf1f55df8f58be"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\git_pack_fixture.py",
+      "path": "verification/git-cache-hash-r2/git_pack_fixture.py",
+      "sha256": "9ec4fdc1d65f5f903bcb4775aa9eb6e92d0f152212b129af676219975599cc00"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\replay-proof.json",
+      "path": "verification/git-cache-hash-r2/replay-proof.json",
+      "sha256": "4aeb79aabf3eb24928875f5d6e04c9727048c810941510236b33da446b73dfd4"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\reviewed-spec.json",
+      "path": "verification/git-cache-hash-r2/reviewed-spec.json",
+      "sha256": "edaa848194e0dce1ae36897fb8f5d8b9aba54c5ee3bc4dd1443d788a8b17e3f4"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\test_git_cache_hash_review.py",
+      "path": "verification/git-cache-hash-r2/test_git_cache_hash_review.py",
+      "sha256": "a5d097449335d3f12ec6aec83ac1f75ca8c48b563d0190ca78e914d5885368f4"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\actual-commands.json",
+      "path": "verification/recorded-runtime-r1/actual-commands.json",
+      "sha256": "d8fdfc5126a07d685a326d22281e73bd20aa430f6e119d1d96d39f8a5b0632a0"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\actual-keystrokes.json",
+      "path": "verification/recorded-runtime-r1/actual-keystrokes.json",
+      "sha256": "c5db82039f9ae40ad48ee736bbe222b37315e4c88c9a60910aab3c2436c244eb"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\recording-status.json",
+      "path": "verification/recorded-runtime-r1/recording-status.json",
+      "sha256": "cbaa20430715ccf94fc918fa21fc06e5d5859cbad26d6af62d85def142bee073"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\runtime-output.log",
+      "path": "verification/recorded-runtime-r1/runtime-output.log",
+      "sha256": "a9ef8c8b99b0890c2892044fa41a4edb0552445a76afe9b37cee32efdf2096d0"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\spec.json",
+      "path": "verification/recorded-runtime-r1/spec.json",
+      "sha256": "2d190a207cdd535622c23c0a6eecc9569782037d63d13f0bf822ec146a1ddad8"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\recorded-runtime-r1\\typing-check.json",
+      "path": "verification/recorded-runtime-r1/typing-check.json",
+      "sha256": "4caa9551cb74b36ee9c6933cc879a9a6056a299360e502d653a530c9abf3d6df"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\pytest-cache\\README.md",
+      "path": "verification/git-cache-hash-r2/pytest-cache/README.md",
+      "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-base-trust-r1\\pytest-cache\\README.md",
+      "path": "verification/git-base-trust-r1/pytest-cache/README.md",
+      "sha256": "73fd6fccdd802c419a6b2d983d6c3173b7da97558ac4b589edec2dfe443db9ad"
+    }
+  ],
+  "reproduction_readme": "# Git thin-pack resolver verification\n\nPost-session AI-assisted independent review, separate from the original model tests. Python3.14.3, exact dependency-lock retained. Use a frozen checkout plus selected verification directory on PYTHONPATH. git-base-trust-r1: run python -B -m pytest -q test_git_pack_review.py,21 passed4 failed; model24 pass; upstream pack151 pass8 skipped, collection warning preserved. git-cache-hash-r2: run python -B -m pytest -q -s test_git_cache_hash_review.py,4 correct custom-base controls pass and4 wrong-content cache cases fail. These scopes overlap and are not summed. Hashlib IDs, pack headers, zlib payload, delta instructions and index are independently constructed by git_pack_fixture.py. Model-reported broader3636 pass/11 environment failures not independently repeated and not used as independent acceptance totals. No compiled accelerators or external service needed.\n\nThe demonstration is openly automated; character timings, whole-word correction and actual program output are retained. Program exit1 is a real observed trust-boundary failure. No product source changes after freeze.\n",
+  "no_model_source_edits": true,
+  "native_trace_included": false,
+  "metadata_revision": "Final-source line location correction; previous published evidence preserved."
+}

@@ -1,0 +1,72 @@
+.............FFFF........                                                [100%]
+================================== FAILURES ===================================
+____________ test_custom_offsetless_full_base_must_be_hashed[sha1] ____________
+
+algorithm = 'sha1'
+
+    @pytest.mark.parametrize('algorithm',['sha1','sha256'])
+    def test_custom_offsetless_full_base_must_be_hashed(algorithm):
+        base=b'good base';wrong=b'evil base';target=b'target'
+        pack,offsets=open_pack([{'kind':7,'ref':oid(base,algorithm),'payload':delta(base,target),'result':target}],algorithm)
+        try:
+>           with pytest.raises(ExternalObjectMismatch):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ExternalObjectMismatch
+
+..\test_git_pack_review.py:84: Failed
+___________ test_custom_offsetless_full_base_must_be_hashed[sha256] ___________
+
+algorithm = 'sha256'
+
+    @pytest.mark.parametrize('algorithm',['sha1','sha256'])
+    def test_custom_offsetless_full_base_must_be_hashed(algorithm):
+        base=b'good base';wrong=b'evil base';target=b'target'
+        pack,offsets=open_pack([{'kind':7,'ref':oid(base,algorithm),'payload':delta(base,target),'result':target}],algorithm)
+        try:
+>           with pytest.raises(ExternalObjectMismatch):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ExternalObjectMismatch
+
+..\test_git_pack_review.py:84: Failed
+_________ test_custom_offsetless_resolved_delta_must_be_hashed[sha1] __________
+
+algorithm = 'sha1'
+
+    @pytest.mark.parametrize('algorithm',['sha1','sha256'])
+    def test_custom_offsetless_resolved_delta_must_be_hashed(algorithm):
+        base=b'base';middle=b'good';wrong=b'evil';target=b'done';bid=oid(base,algorithm);mid=oid(middle,algorithm)
+        pack,offsets=open_pack([{'kind':7,'ref':mid,'payload':delta(middle,target),'result':target}],algorithm)
+        def lookup(requested):
+            if requested==mid:return None,7,(bid,[delta(base,wrong)])
+            assert requested==bid
+            return None,3,[base]
+        try:
+>           with pytest.raises(ExternalObjectMismatch):pack.resolve_object(offsets[0],7,(mid,[delta(middle,target)]),get_ref=lookup)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ExternalObjectMismatch
+
+..\test_git_pack_review.py:97: Failed
+________ test_custom_offsetless_resolved_delta_must_be_hashed[sha256] _________
+
+algorithm = 'sha256'
+
+    @pytest.mark.parametrize('algorithm',['sha1','sha256'])
+    def test_custom_offsetless_resolved_delta_must_be_hashed(algorithm):
+        base=b'base';middle=b'good';wrong=b'evil';target=b'done';bid=oid(base,algorithm);mid=oid(middle,algorithm)
+        pack,offsets=open_pack([{'kind':7,'ref':mid,'payload':delta(middle,target),'result':target}],algorithm)
+        def lookup(requested):
+            if requested==mid:return None,7,(bid,[delta(base,wrong)])
+            assert requested==bid
+            return None,3,[base]
+        try:
+>           with pytest.raises(ExternalObjectMismatch):pack.resolve_object(offsets[0],7,(mid,[delta(middle,target)]),get_ref=lookup)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE ExternalObjectMismatch
+
+..\test_git_pack_review.py:97: Failed
+=========================== short test summary info ===========================
+FAILED ..\test_git_pack_review.py::test_custom_offsetless_full_base_must_be_hashed[sha1]
+FAILED ..\test_git_pack_review.py::test_custom_offsetless_full_base_must_be_hashed[sha256]
+FAILED ..\test_git_pack_review.py::test_custom_offsetless_resolved_delta_must_be_hashed[sha1]
+FAILED ..\test_git_pack_review.py::test_custom_offsetless_resolved_delta_must_be_hashed[sha256]
+4 failed, 21 passed in 1.96s

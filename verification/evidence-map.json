@@ -1,0 +1,69 @@
+{
+  "requirements": [
+    {
+      "requirement": "OFS strictly backward at indexed objects; separate offset/oid paths",
+      "source": "dulwich/pack.py resolve_object",
+      "result": "Independent negative,zero,far offset rejections and valid mixed chain pass; model gap/mixedcycle regression passes."
+    },
+    {
+      "requirement": "OffsetNone external cycles, per-request resolver count and sharing",
+      "source": "resolve_object seen_offsets and seen_ref_ids",
+      "result": "Independent three-node cycles and separate requests sharing one correct base pass for both hash formats."
+    },
+    {
+      "requirement": "External final type/content hash verified before use, both object formats",
+      "source": "_get_external_ref vs resolve_object get_ref argument",
+      "result": "Default callback valid and wrong-hash checks pass; custom external terminal/delta can be wrong, no ExternalObjectMismatch."
+    },
+    {
+      "requirement": "Depth exact allowed, next rejected before resolver",
+      "source": "max_delta_resolve_depth, len(delta_stack)",
+      "result": "Mixed exact2 nodes succeed; exceeding1 node refuses before external fetch."
+    },
+    {
+      "requirement": "Failure leaves cache unchanged and valid cache survives",
+      "source": "staged cache write after delta apply",
+      "result": "Default hash/apply failures leave cache unchanged; custom hash violation is accepted and poisons cache, making public get_raw return incorrect object bytes."
+    }
+  ],
+  "process_issues": [
+    {
+      "native_lines": [
+        583,
+        619,
+        628,
+        679,
+        720,
+        727,
+        745
+      ],
+      "file": "tests/test_pack_resolve_hardening.py",
+      "details": "Model creates and runs tests: custom offsetNone get_ref is used for cycle/depth cases; wrong-hash cases assign resolve_ext_ref only. The required custom callback + wrong hash combination is absent from final tests."
+    }
+  ],
+  "product_issues": [
+    {
+      "file": "dulwich/pack.py",
+      "function": "Pack.resolve_object",
+      "lines": [
+        5289,
+        5290,
+        5344
+      ],
+      "trigger": "get_ref returns (None,3,[evil base]) for requested hash of good base, or returns external REF with wrong reconstructed contents.",
+      "result": "resolve_object skips _get_external_ref hash check and commits wrong resolved bytes to offset cache. get_raw(requested target ID) returns evil base!/evil! with actual_oid_matches_requested False.",
+      "evidence": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.stdout.log"
+    }
+  ],
+  "independent_scopes": [
+    "git-base-trust-r1",
+    "git-cache-hash-r2"
+  ],
+  "source_diversity_review": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\semantic-review.json",
+  "time": "2026-11-14T20:58:58+08:00",
+  "uid": 868,
+  "frozen_commit": "797cd01f671c857887e9a17897e7016ee9de188a",
+  "native_trace_sha256": "10d133e72ef648d34faa50a67063d6f2b69bb8f70a582338f48616c77111023b",
+  "no_model_source_changes_after_freeze": true,
+  "metadata_revision": "Correct exact final-source locations: custom get_ref return5289, offsetNone branch5290, cache commit5344; technical finding unchanged."
+}

@@ -1,0 +1,21 @@
+{
+  "independent_base_trust": {
+    "passed": 21,
+    "failed": 4
+  },
+  "focused_cache_hash": {
+    "passed": 4,
+    "failed": 4
+  },
+  "model_added_replay": {
+    "passed": 24,
+    "failed": 0
+  },
+  "upstream_pack": {
+    "passed": 151,
+    "skipped": 8,
+    "failed": 0
+  },
+  "not_summed": true,
+  "broader_suite_not_independently_repeated": true
+}
