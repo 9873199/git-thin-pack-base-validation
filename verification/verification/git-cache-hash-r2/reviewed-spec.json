@@ -1,0 +1,43 @@
+{
+  "uid": 868,
+  "run_id": "uf-20261114-new10-git-thin-base-trust-retry-1",
+  "reviewed": true,
+  "reviewer": "Codex primary AI-assisted frozen product review",
+  "frozen_trace_sha256": "10d133e72ef648d34faa50a67063d6f2b69bb8f70a582338f48616c77111023b",
+  "revision": "git-cache-hash-r2",
+  "product_modules": [
+    "dulwich.pack",
+    "dulwich.object_format"
+  ],
+  "support_files": [
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\acceptance-preparation\\git_pack_fixture.py",
+      "path": "git_pack_fixture.py",
+      "sha256": "9ec4fdc1d65f5f903bcb4775aa9eb6e92d0f152212b129af676219975599cc00"
+    },
+    {
+      "source": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\acceptance-preparation\\test_git_cache_hash_review.py",
+      "path": "test_git_cache_hash_review.py",
+      "sha256": "a5d097449335d3f12ec6aec83ac1f75ca8c48b563d0190ca78e914d5885368f4"
+    }
+  ],
+  "commands": [
+    {
+      "name": "cache-hash-reproduction",
+      "argv": [
+        "{python}",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "-s",
+        "{verification}/test_git_cache_hash_review.py",
+        "-o",
+        "addopts=",
+        "-o",
+        "cache_dir={verification}/pytest-cache"
+      ],
+      "timeout": 120
+    }
+  ]
+}

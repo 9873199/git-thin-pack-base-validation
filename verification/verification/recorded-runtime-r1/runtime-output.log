@@ -1,0 +1,9 @@
+sha1 trusted resolver: b'good base!'
+default wrong hash: rejected
+custom get_ref returned: b'evil base!'
+expected: b'good base!' cache hash valid: False
+sha256 trusted resolver: b'good base!'
+default wrong hash: rejected
+custom get_ref returned: b'evil base!'
+expected: b'good base!' cache hash valid: False
+Observed failing trust checks: 2

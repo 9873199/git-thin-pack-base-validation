@@ -1,0 +1,20 @@
+{
+  "time": "2026-11-14T20:49:52+08:00",
+  "argv": [
+    "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\tasks\\dulwich\\env\\Scripts\\python.exe",
+    "-B",
+    "-m",
+    "pytest",
+    "-q",
+    "-s",
+    "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2/test_git_cache_hash_review.py",
+    "-o",
+    "addopts=",
+    "-o",
+    "cache_dir=D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2/pytest-cache"
+  ],
+  "cwd": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\replay-source",
+  "exit_code": 1,
+  "stdout_log": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.stdout.log",
+  "stderr_log": "D:\\hc\\userFeedback\\cache\\security-ten-20261114-r1\\evaluation\\uf-20261114-new10-git-thin-base-trust-retry-1\\verification\\git-cache-hash-r2\\cache-hash-reproduction.stderr.log"
+}

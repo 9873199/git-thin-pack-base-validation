@@ -1,0 +1,22 @@
+{
+  "time": "2026-11-14T20:53:54+08:00",
+  "status": "PASS",
+  "timing_policy": "word-special-v2",
+  "per_category_planned_and_observed_timings_passed": true,
+  "event_count": 31,
+  "minimum_delay_seconds": 0.1411429638551453,
+  "maximum_delay_seconds": 0.7873743651822125,
+  "actual_interval_minimum_seconds": 0.14205099999999993,
+  "actual_interval_maximum_seconds": 0.7935000000000003,
+  "actual_word_gaps_seconds": [
+    0.7819190000000003
+  ],
+  "whitespace_has_no_extra_pause": true,
+  "repaired_word_counts": [
+    1
+  ],
+  "visible_backspace_count": 7,
+  "final_buffer_matches_execution": true,
+  "all_results_inside_recording": true,
+  "source_is_human": false
+}
